@@ -1,0 +1,6 @@
+object 05219a1276341e72d8082d76b7f5ed394b7437a4
+type commit
+tag v2.9.0
+tagger Junio C Hamano <gitster@pobox.com> 1465839742 -0700
+
+Git 2.9

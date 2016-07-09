@@ -1,0 +1,35 @@
+{
+  "name": "scoped-gpg",
+  "version": "1.0.0",
+  "description": "GPG wrapper with a user-friendly keyring support",
+  "main": "lib/scoped-gpg.js",
+  "bin": {
+    "scoped-gpg": "bin/scoped-gpg"
+  },
+  "scripts": {
+    "test": "tape test/*-test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/indutny/scoped-gpg.git"
+  },
+  "keywords": [
+    "scoped",
+    "gpg",
+    "keyring",
+    "friendly"
+  ],
+  "author": "Fedor Indutny <fedor@indutny.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/indutny/scoped-gpg/issues"
+  },
+  "homepage": "https://github.com/indutny/scoped-gpg#readme",
+  "dependencies": {
+    "async": "^2.0.0-rc.6",
+    "yargs": "^4.7.1"
+  },
+  "devDependencies": {
+    "tape": "^4.6.0"
+  }
+}

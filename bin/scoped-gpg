@@ -1,0 +1,72 @@
+#!/usr/bin/env node
+'use strict';
+
+const yargs = require('yargs')
+    .usage('Usage: $0 --keyring file --verify signature -\n' +
+           '       $0 --keyring file --list-keys')
+    .describe('verify', 'Verify the gpg signature of a payload given in STDIN')
+    .string('verify')
+    .boolean('list-keys')
+    .describe('list-keys', 'List keys in a keyring')
+    .describe('keyring', 'Keyring file to use for scoped operations')
+    .string('keyring')
+    .describe('keyserver', 'Url of keyserver to use (optional)')
+    .string('keyserver')
+    .number('status-fd')
+    .alias('h', 'help')
+    .help()
+const argv = yargs.argv;
+
+const fs = require('fs');
+const path = require('path');
+const spawnSync = require('child_process').spawnSync;
+
+const ScopedGPG = require('../');
+
+if (!argv.keyring) {
+  const GIT_PREFIX = process.env.GIT_PREFIX;
+  if (GIT_PREFIX === undefined) {
+    console.error('--keyring is required');
+    yargs.showHelp();
+    process.exit(1);
+  }
+
+  const GIT = process.env.GIT_SSH_COMMAND || process.env.GIT_SSH ||
+              process.env.GIT_EXEC_PATH || 'git';
+  const p = spawnSync(GIT, [ 'config', 'gpg.scope' ], {
+    stdio: [ null, 'pipe', 'inherit' ]
+  });
+  const scope = p.stdout.toString().trim() || 'gpg-scope';
+
+  // If in git repo - use this scope
+  if (path.isAbsolute(scope))
+    argv.keyring = scope;
+  else
+    argv.keyring = path.join(process.cwd(), '.git', scope);
+}
+
+const gpg = new ScopedGPG({ keyring: argv.keyring, keyserver: argv.keyserver });
+
+if (argv.verify) {
+  const options = {
+    verbose: true,
+    'status-fd': argv['status-fd'] === undefined ? false : argv['status-fd']
+  };
+  let chunks = '';
+  process.stdin.on('data', chunk => chunks += chunk);
+  process.stdin.on('end', () => {
+    gpg.verify(chunks, fs.readFileSync(argv.verify), options, (err) => {
+      if (err)
+        throw err;
+    });
+  });
+} else if (argv['list-keys']) {
+  gpg.listKeys((err, keys) => {
+    if (err)
+      throw err;
+    console.log(keys);
+  });
+} else {
+  yargs.showHelp();
+  process.exit(1);
+}
