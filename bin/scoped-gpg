@@ -20,6 +20,7 @@ const argv = yargs.argv;
 const fs = require('fs');
 const path = require('path');
 const spawnSync = require('child_process').spawnSync;
+const Buffer = require('buffer').Buffer;
 
 const ScopedGPG = require('../');
 
@@ -52,10 +53,11 @@ if (argv.verify) {
     verbose: true,
     'status-fd': argv['status-fd'] === undefined ? false : argv['status-fd']
   };
-  let chunks = '';
-  process.stdin.on('data', chunk => chunks += chunk);
+  const chunks = [];
+  process.stdin.on('data', chunk => chunks.push(chunk));
   process.stdin.on('end', () => {
-    gpg.verify(chunks, fs.readFileSync(argv.verify), options, (err) => {
+    gpg.verify(Buffer.concat(chunks), fs.readFileSync(argv.verify), options,
+               (err) => {
       if (err)
         throw err;
     });
