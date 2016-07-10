@@ -68,6 +68,25 @@ if (argv.verify) {
       throw err;
     console.log(keys);
   });
+} else if (argv['s']) {
+  // Just a wrapper to be used with `git tag -s` or `git commit -S`
+  let param = '-';
+  if (argv.b)
+    param += 'b';
+  param += 's';
+  if (argv.a)
+    param += 'a';
+  if (argv.u !== undefined)
+    param += 'u';
+
+  const args = [ param ];
+  if (argv.u !== undefined)
+    args.push(argv.u);
+
+  const p = spawnSync(ScopedGPG.GPG, args, {
+    stdio: 'inherit'
+  });
+  process.exit(p.status);
 } else {
   yargs.showHelp();
   process.exit(1);
