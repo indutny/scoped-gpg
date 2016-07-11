@@ -27,6 +27,7 @@
   "homepage": "https://github.com/indutny/scoped-gpg#readme",
   "dependencies": {
     "async": "^2.0.0-rc.6",
+    "reopen-tty": "^1.0.1",
     "yargs": "^4.7.1"
   },
   "devDependencies": {
