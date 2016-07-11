@@ -1,6 +1,6 @@
 {
   "name": "scoped-gpg",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "GPG wrapper with a user-friendly keyring support",
   "main": "lib/scoped-gpg.js",
   "bin": {
