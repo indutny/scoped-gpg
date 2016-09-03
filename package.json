@@ -28,6 +28,8 @@
   "dependencies": {
     "async": "^2.0.0-rc.6",
     "reopen-tty": "^1.0.1",
+    "rimraf": "^2.5.4",
+    "semver": "^5.3.0",
     "yargs": "^4.7.1"
   },
   "devDependencies": {
